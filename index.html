@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0D1117">
+<title>MOCHI Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',sans-serif;background:#0D1117;color:#E6EDF3;min-height:100vh;min-height:100dvh;max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+input,select,button{font-family:'DM Sans',sans-serif}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
+
+.hdr{background:linear-gradient(135deg,#161B22,#1A1F2E);border-bottom:1px solid #21262D;padding:20px 20px 16px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:26px;font-weight:800;letter-spacing:3px;background:linear-gradient(90deg,#58A6FF,#BC8CFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo-sub{font-size:11px;color:#8896A6;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.chip{background:#21262D;border:1px solid #30363D;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;color:#8896A6;display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%}.dot-on{background:#2EA043}.dot-off{background:#DA3633}
+
+.tabs{display:flex;background:#161B22;border-bottom:1px solid #21262D;position:sticky;top:0;z-index:50}
+.tab{flex:1;padding:12px 0;border:none;background:0 0;color:#8896A6;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;border-bottom:2px solid transparent;transition:.2s}
+.tab.on{color:#58A6FF;border-bottom-color:#58A6FF}
+.num{background:#58A6FF;color:#0D1117;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:4px}
+
+.box{padding:20px;display:flex;flex-direction:column;gap:20px;padding-bottom:100px}
+.fg{display:flex;flex-direction:column;gap:8px}
+.lb{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#8896A6}
+.inp{background:#161B22;border:1px solid #30363D;border-radius:10px;padding:12px 14px;color:#E6EDF3;font-size:15px;outline:0;width:100%}
+.inp:focus{border-color:#58A6FF}
+
+.cgrid{display:flex;flex-wrap:wrap;gap:8px}
+.cbtn{padding:10px 16px;border:2px solid;border-radius:10px;background:0 0;font-size:13px;font-weight:700;cursor:pointer;transition:.2s}
+
+.llist{display:flex;flex-wrap:wrap;gap:6px;max-height:200px;overflow-y:auto}
+.lbtn{padding:8px 14px;border:1px solid #30363D;border-radius:8px;background:#161B22;color:#C9D1D9;font-size:12px;cursor:pointer;transition:.15s}
+.lbtn.on{border-color:#58A6FF;background:rgba(88,166,255,.15);color:#58A6FF;font-weight:600}
+
+.pr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#161B22;border:1px solid #21262D;border-radius:12px;transition:.2s}
+.pr.on{border-color:#58A6FF;background:rgba(88,166,255,.06)}
+.pi{display:flex;align-items:center;gap:10px}.pe{font-size:20px}.pn{font-size:13px;font-weight:500}
+.qc{display:flex;align-items:center;gap:2px}
+.qb{width:36px;height:36px;border:1px solid #30363D;border-radius:8px;background:#21262D;color:#C9D1D9;font-size:20px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.qb:active{background:#30363D}
+.qi{width:48px;height:36px;border:1px solid #30363D;border-radius:8px;background:#0D1117;color:#E6EDF3;font-size:15px;font-weight:600;text-align:center;outline:0}
+
+.go{padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,#238636,#2EA043);color:#fff;font-size:17px;font-weight:700;cursor:pointer;letter-spacing:.5px;width:100%}
+.go:active{opacity:.8}.go:disabled{opacity:.5}
+
+.fbar{display:flex;gap:8px}
+.fsel{flex:1;background:#161B22;border:1px solid #30363D;border-radius:10px;padding:10px 12px;color:#C9D1D9;font-size:13px;outline:0}
+.fdt{background:#161B22;border:1px solid #30363D;border-radius:10px;padding:10px 12px;color:#C9D1D9;font-size:13px;outline:0}
+
+.srow{display:flex;gap:10px;align-items:stretch}
+.sc{flex:1;background:#161B22;border:1px solid #21262D;border-radius:12px;padding:12px 16px;text-align:center}
+.sn{font-size:26px;font-weight:800;background:linear-gradient(90deg,#58A6FF,#BC8CFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sl{font-size:11px;color:#8896A6;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+.dlb{background:linear-gradient(135deg,#1F6FEB,#58A6FF);border:none;border-radius:12px;padding:12px 20px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap}
+.dlb:active{opacity:.8}
+
+.retry-bar{background:#1C1F26;border:1px solid #D29922;border-radius:12px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.retry-info{font-size:13px;color:#D29922;font-weight:600}.retry-btn{background:#D29922;border:none;border-radius:8px;padding:8px 16px;color:#0D1117;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+
+.rc{background:#161B22;border:1px solid #21262D;border-radius:14px;padding:16px;margin-bottom:10px}
+.rh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.ct{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;color:#fff;margin-right:8px;text-transform:uppercase;letter-spacing:.5px}
+.rl{font-size:14px;font-weight:600;color:#C9D1D9}
+.del{background:0 0;border:none;color:#484F58;font-size:16px;cursor:pointer;padding:4px 8px}
+.rd{font-size:12px;color:#8896A6;margin-bottom:10px}
+.ri{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:#0D1117;border-radius:8px;margin-bottom:4px;font-size:13px}
+.rin{color:#C9D1D9}.riq{color:#58A6FF;font-weight:700;font-size:14px}
+.syn{color:#2EA043;font-size:11px}.pen{color:#D29922;font-size:11px}
+
+.acard{background:#161B22;border:1px solid #21262D;border-radius:14px;padding:16px;margin-bottom:12px}
+.atitle{font-size:14px;font-weight:700;margin-bottom:12px;color:#C9D1D9}
+.arow{display:flex;gap:8px;margin-bottom:8px}
+.arow .inp{flex:1}
+.abtn{padding:10px 16px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.abtn-add{background:#238636;color:#fff}.abtn-add:active{opacity:.8}
+.abtn-blue{background:#1F6FEB;color:#fff}.abtn-blue:active{opacity:.8}
+.abtn-gray{background:#21262D;color:#C9D1D9;border:1px solid #30363D}.abtn-gray:active{opacity:.8}
+.alist{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.atag{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:#21262D;border:1px solid #30363D;border-radius:8px;font-size:12px;color:#C9D1D9}
+.atag button{background:none;border:none;color:#DA3633;font-size:14px;cursor:pointer;padding:0;line-height:1}
+
+.ov{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.95);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+.ob{background:#161B22;border:1px solid #30363D;border-radius:16px;padding:24px;max-width:400px;width:100%}
+.ot{font-size:18px;font-weight:700;margin-bottom:8px}
+.od{font-size:13px;color:#8896A6;margin-bottom:16px;line-height:1.6}
+.oi{width:100%;background:#0D1117;border:1px solid #30363D;border-radius:10px;padding:12px;color:#E6EDF3;font-size:14px;outline:0;margin-bottom:12px}
+.oi:focus{border-color:#58A6FF}
+.osv{width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#238636,#2EA043);color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px}
+.osk{width:100%;padding:12px;border:1px solid #30363D;border-radius:12px;background:0 0;color:#8896A6;font-size:13px;font-weight:600;cursor:pointer}
+.omsg{text-align:center;padding:8px;font-size:13px;font-weight:600;display:none}
+.stb{background:#21262D;border:1px solid #30363D;border-radius:10px;padding:10px;color:#8896A6;font-size:12px;font-weight:600;cursor:pointer;text-align:center;width:100%}
+
+/* PIN */
+.pin-ov{position:fixed;top:0;left:0;right:0;bottom:0;background:#0D1117;z-index:250;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px}
+.pin-logo{font-size:32px;font-weight:800;letter-spacing:3px;background:linear-gradient(90deg,#58A6FF,#BC8CFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.pin-label{font-size:14px;color:#8896A6;margin-bottom:24px}
+.pin-dots{display:flex;gap:12px;margin-bottom:24px}
+.pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid #30363D;transition:.2s}
+.pin-dot.filled{background:#58A6FF;border-color:#58A6FF}
+.pin-dot.err{background:#DA3633;border-color:#DA3633}
+.pin-pad{display:grid;grid-template-columns:repeat(3,72px);gap:12px}
+.pin-key{width:72px;height:54px;border:1px solid #30363D;border-radius:12px;background:#161B22;color:#E6EDF3;font-size:22px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.pin-key:active{background:#21262D}
+.pin-key.empty{border:none;background:0 0;cursor:default}
+.pin-msg{font-size:13px;color:#DA3633;margin-top:16px;min-height:20px}
+
+/* VERIFY */
+.vbox{background:#161B22;border:1px solid #21262D;border-radius:14px;padding:16px;margin-bottom:10px}
+.vrow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #21262D;font-size:13px}
+.vrow:last-child{border:none}
+.vok{color:#2EA043;font-weight:600}.verr{color:#DA3633;font-weight:600}
+
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;z-index:300;display:flex;align-items:center;gap:8px;white-space:nowrap;animation:tt 2.5s forwards}
+.t-ok{background:#238636;color:#fff;box-shadow:0 8px 24px rgba(35,134,54,.4)}
+.t-er{background:#DA3633;color:#fff;box-shadow:0 8px 24px rgba(218,54,51,.4)}
+.t-ld{background:#1F6FEB;color:#fff;box-shadow:0 8px 24px rgba(31,111,235,.4);animation:none}
+@keyframes tt{0%{opacity:0;transform:translateX(-50%) translateY(-10px)}10%{opacity:1;transform:translateX(-50%) translateY(0)}80%{opacity:1}100%{opacity:0}}
+
+.empty{text-align:center;padding:60px 20px}
+.h{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- PIN SCREEN -->
+<div class="pin-ov" id="pinOv">
+ <div class="pin-logo">MOCHI</div>
+ <div class="pin-label" id="pinLabel">PIN daxil edin</div>
+ <div class="pin-dots" id="pinDots"><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div></div>
+ <div class="pin-pad">
+  <button class="pin-key" onclick="pinKey(1)">1</button><button class="pin-key" onclick="pinKey(2)">2</button><button class="pin-key" onclick="pinKey(3)">3</button>
+  <button class="pin-key" onclick="pinKey(4)">4</button><button class="pin-key" onclick="pinKey(5)">5</button><button class="pin-key" onclick="pinKey(6)">6</button>
+  <button class="pin-key" onclick="pinKey(7)">7</button><button class="pin-key" onclick="pinKey(8)">8</button><button class="pin-key" onclick="pinKey(9)">9</button>
+  <button class="pin-key empty"></button><button class="pin-key" onclick="pinKey(0)">0</button><button class="pin-key" onclick="pinDel()">⌫</button>
+ </div>
+ <div class="pin-msg" id="pinMsg"></div>
+</div>
+
+<!-- SHEETS SETUP -->
+<div class="ov h" id="ov">
+<div class="ob">
+ <div class="ot">⚙️ Google Sheets</div>
+ <div class="od">Web App URL daxil edin.</div>
+ <input type="url" class="oi" id="oUrl" placeholder="https://script.google.com/macros/s/...">
+ <div class="omsg" id="oMsg" style="color:#2EA043">✓ Saxlanıldı!</div>
+ <button class="osv" id="oBtn" onclick="doSave()">Yadda saxla</button>
+ <button class="osk" onclick="doSkip()">Sonra</button>
+</div>
+</div>
+
+<!-- APP -->
+<div class="h" id="app">
+
+<div class="hdr">
+<div><div class="logo">MOCHI</div><div class="logo-sub">Ekspeditor Tracker</div></div>
+<div class="chip"><span class="dot" id="dot"></span><span id="hd"></span></div>
+</div>
+
+<div class="tabs">
+<button class="tab on" id="t1" onclick="go('f')">+ Qeyd</button>
+<button class="tab" id="t2" onclick="go('h')">☰ Tarixçə <span class="num h" id="cnt">0</span></button>
+<button class="tab" id="t3" onclick="go('a')">⚙ İdarə</button>
+</div>
+
+<div id="tc"></div>
+
+<!-- FORM -->
+<div class="box" id="vf">
+ <div class="retry-bar h" id="pendBar"><div class="retry-info">⏳ <span id="pendCount">0</span> göndərilməyib</div><button class="retry-btn" onclick="manualRetry()">Göndər</button></div>
+ <div class="fg"><div class="lb">Tarix</div><input type="date" class="inp" id="fDate"></div>
+ <div class="fg"><div class="lb">Market</div><div class="cgrid" id="cg"></div></div>
+ <div class="fg h" id="lg"><div class="lb">Filial</div><div class="llist" id="ll"></div></div>
+ <div class="fg"><div class="lb">Məhsullar</div><div id="pl" style="display:flex;flex-direction:column;gap:6px"></div></div>
+ <button class="go" id="sub" onclick="submit()">Saxla ✓</button>
+</div>
+
+<!-- HISTORY -->
+<div class="box h" id="vh">
+ <div class="retry-bar h" id="pendBar2"><div class="retry-info">⏳ <span id="pendCount2">0</span> göndərilməyib</div><button class="retry-btn" onclick="manualRetry()">Göndər</button></div>
+ <div class="fbar">
+  <select class="fsel" id="hfc" onchange="hist()"><option value="all">Bütün marketlər</option></select>
+  <input type="date" class="fdt" id="hfd" onchange="hist()">
+ </div>
+ <div class="srow">
+  <div class="sc"><div class="sn" id="sv">0</div><div class="sl">Vizit</div></div>
+  <div class="sc"><div class="sn" id="si">0</div><div class="sl">Məhsul</div></div>
+  <button class="dlb" onclick="csv()">⬇ CSV</button>
+ </div>
+ <div id="rl"></div>
+</div>
+
+<!-- ADMIN -->
+<div class="box h" id="va">
+ <div class="acard">
+  <div class="atitle">➕ Yeni Market</div>
+  <div class="arow"><input class="inp" id="newChain" placeholder="Market adı"><button class="abtn abtn-add" onclick="addChain()">Əlavə et</button></div>
+  <div class="lb" style="margin-top:8px">Marketlər:</div><div class="alist" id="chainList"></div>
+ </div>
+ <div class="acard">
+  <div class="atitle">🏪 Filial</div>
+  <div class="fg" style="margin-bottom:8px"><select class="inp" id="branchChainSel" style="padding:10px 14px"><option value="">Market seçin...</option></select></div>
+  <div class="arow"><input class="inp" id="newBranch" placeholder="Filial adı"><button class="abtn abtn-add" onclick="addBranch()">Əlavə et</button></div>
+  <div class="lb" style="margin-top:8px">Filiallar:</div><div class="alist" id="branchList"></div>
+ </div>
+ <div class="acard">
+  <div class="atitle">📦 Məhsul</div>
+  <div class="arow"><input class="inp" id="newProdName" placeholder="Məhsul adı" style="flex:2"><input class="inp" id="newProdEmoji" placeholder="😀" style="flex:0;width:50px;text-align:center"></div>
+  <button class="abtn abtn-add" style="width:100%;margin-top:4px" onclick="addProduct()">Əlavə et</button>
+  <div class="lb" style="margin-top:12px">Məhsullar:</div><div class="alist" id="prodList"></div>
+ </div>
+
+ <!-- VERIFY -->
+ <div class="acard">
+  <div class="atitle">🔍 Google Sheets yoxla</div>
+  <button class="abtn abtn-blue" style="width:100%" onclick="verify()" id="verBtn">Yoxla</button>
+  <div id="verResult" style="margin-top:12px"></div>
+ </div>
+
+ <!-- BACKUP -->
+ <div class="acard">
+  <div class="atitle">💾 Backup / Restore</div>
+  <div style="display:flex;gap:8px">
+   <button class="abtn abtn-blue" style="flex:1" onclick="doBackup()">⬇ Backup</button>
+   <label class="abtn abtn-gray" style="flex:1;text-align:center;cursor:pointer"><input type="file" accept=".json" style="display:none" onchange="doRestore(event)">⬆ Restore</label>
+  </div>
+ </div>
+
+ <!-- PIN -->
+ <div class="acard">
+  <div class="atitle">🔒 PIN dəyiş</div>
+  <div class="arow"><input type="password" inputmode="numeric" maxlength="4" class="inp" id="newPin" placeholder="Yeni 4 rəqəmli PIN"><button class="abtn abtn-add" onclick="changePin()">Dəyiş</button></div>
+ </div>
+
+ <button class="stb" onclick="openOv()">⚙️ Google Sheets URL</button>
+</div>
+
+</div><!-- /app -->
+
+<input type="file" id="restoreFile" accept=".json" style="display:none">
+
+<script>
+var DEF_SM={"Rahat":["Rahat Aqua Park","Rahat Bayil","Rahat Blue Residence","Rahat Buzovna","Rahat Chinar","Rahat Crescent","Rahat Qala Mall","Rahat MUM","Rahat Novxani","Rahat Teze Bazar","Rahat Novxani 3","Rahat Sea Breeze","Rahat ADORE","Rahat Inqilab2","Rahat Qala","Rahat Lehis 3","Rahat Leyic Baglari","Rahat MetroPark","Rahat Papanin","Rahat SUVELAN","Rahat Yasamal-3","Rahat Təbriz"],"Neptun":["Ag shexer","Narimanov","Tbilisi","Papanin"],"Favorit":["Ag şəhər","Paralel","Zaqulba","S.Vurgun","Ag Seher","S. Vurgun"],"Bazarstore":["BAYIL","GENCLİK","Xatai Mağazası","QARA QARAYEV","QARA QARAYEV ÖZBEKİSTAN KUC","MIDA YASAMAL","NIZAMI CITY","PARK BULVAR","UKRAYNA DAİRESİ","YASAMAL PARK","AZADLIQ ÇEMENZEMİNLİ 68","EHMEDLI","GENCLIK E-TICARET","XALQLAR DOSTLUĞU","XEYAL ADASI VIP","Q.QARAYEV E-TICARET","PANORAMA PARK","SUMQAYIT UNİVERSİTET","BADAMDAR","NESİMİ R. XAN ŞUŞİNSKİ","AXUNDOV BAGI PILOT RESIDENCE","NESIMI 4.MIKRORAYON","YASAMAL RICH MTK","BAKIXANOV AYGÜN CİTY","BAKIXANOV S.MEHMANDAROV 28"],"Wolt Market":["Wolt Market Binagadi","Wolt Market Khalglar","Wolt Market Landmark","Wolt Market Nasimi","Wolt Market Yasamal"]};
+var DEF_PR=[{name:"Çiyələk mochi (6 ədəd) 200 qr",e:"🍓"},{name:"Manqo mochi (6 ədəd) 200 qr",e:"🥭"},{name:"Şokolad mochi (6 ədəd) 200 qr",e:"🍫"},{name:"Saqqız mochi (6 ədəd) 200 qr",e:"🫧"},{name:"Püstə mochi (6 ədəd) 200 qr",e:"🟢"},{name:"Vanil mochi (6 ədəd) 200 qr",e:"🍦"},{name:"Banan mochi (6 ədəd) 200 qr",e:"🍌"}];
+var CL={"Rahat":"#E63946","Neptun":"#1D3557","Favorit":"#E9C46A","Bazarstore":"#2A9D8F","Wolt Market":"#00C2E8"};
+var PAL=["#E63946","#1D3557","#E9C46A","#2A9D8F","#00C2E8","#F77F00","#7209B7","#4CC9F0","#06D6A0","#EF476F","#118AB2","#073B4C"];
+
+var SM,PR,recs=[],sCh="",sLo="",qty={},URL_="",PIN="",retrying=false;
+
+function ls(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function ss(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function $(id){return document.getElementById(id)}
+function td(){return new Date().toISOString().split('T')[0]}
+function gc(n){return CL[n]||PAL[Math.abs(function(s){var h=0;for(var i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0}return h}(n))%PAL.length]}
+function pCnt(){return recs.filter(function(r){return!r.ok}).length}
+
+function loadData(){
+ try{SM=JSON.parse(ls('m_sm'))}catch(e){SM=null}
+ if(!SM)SM=JSON.parse(JSON.stringify(DEF_SM));
+ try{PR=JSON.parse(ls('m_pr'))}catch(e){PR=null}
+ if(!PR)PR=DEF_PR.slice();
+ try{recs=JSON.parse(ls('m_rc')||'[]')}catch(e){recs=[]}
+ URL_=ls('m_url')||"";
+ PIN=ls('m_pin')||"";
+}
+
+// ===== PIN =====
+var pinBuf="",pinMode="check",pinNew="";
+
+function initPin(){
+ loadData();
+ if(!PIN){pinMode="create";$('pinLabel').textContent="Yeni PIN yaradın (4 rəqəm)"}
+ else{pinMode="check";$('pinLabel').textContent="PIN daxil edin"}
+}
+
+function pinKey(n){
+ if(pinBuf.length>=4)return;
+ pinBuf+=n;
+ updateDots();
+ if(pinBuf.length===4)setTimeout(pinSubmit,200);
+}
+
+function pinDel(){pinBuf=pinBuf.slice(0,-1);updateDots();$('pinMsg').textContent=''}
+
+function updateDots(){
+ var dots=$('pinDots').children;
+ for(var i=0;i<4;i++)dots[i].className='pin-dot'+(i<pinBuf.length?' filled':'');
+}
+
+function pinSubmit(){
+ if(pinMode==="create"){
+  pinNew=pinBuf;pinBuf="";updateDots();
+  pinMode="confirm";$('pinLabel').textContent="PIN-i təsdiqləyin";return;
+ }
+ if(pinMode==="confirm"){
+  if(pinBuf===pinNew){
+   PIN=pinBuf;ss('m_pin',PIN);
+   $('pinOv').classList.add('h');initApp();
+  }else{
+   pinErr("PINlər uyğun gəlmir!");pinMode="create";pinNew="";
+   $('pinLabel').textContent="Yeni PIN yaradın (4 rəqəm)";
+  }return;
+ }
+ if(pinBuf===PIN){$('pinOv').classList.add('h');initApp()}
+ else pinErr("Yanlış PIN!");
+}
+
+function pinErr(msg){
+ var dots=$('pinDots').children;
+ for(var i=0;i<4;i++)dots[i].className='pin-dot err';
+ $('pinMsg').textContent=msg;
+ pinBuf="";setTimeout(function(){updateDots();$('pinMsg').textContent=''},1000);
+}
+
+// ===== INIT =====
+function initApp(){
+ $('app').classList.remove('h');
+ $('hd').textContent=new Date().toLocaleDateString('az-AZ',{day:'numeric',month:'short'});
+ $('fDate').value=td();
+ mkCh();mkPr();updB();updD();updP();
+ if(!URL_)$('ov').classList.remove('h');
+ else retry();
+ window.addEventListener('online',function(){updD();if(URL_&&pCnt()>0){toast('İnternet qoşuldu!','ld');retry()}});
+ window.addEventListener('offline',function(){updD()});
+ setInterval(function(){if(URL_&&pCnt()>0&&navigator.onLine)retry()},30000);
+}
+
+function updD(){$('dot').className=URL_?(navigator.onLine?'dot dot-on':'dot dot-off'):'dot dot-off'}
+function saveSM(){ss('m_sm',JSON.stringify(SM))}
+function savePR(){ss('m_pr',JSON.stringify(PR))}
+function saveRC(){ss('m_rc',JSON.stringify(recs))}
+function updP(){var p=pCnt(),s=URL_&&p>0;$('pendBar').classList.toggle('h',!s);$('pendBar2').classList.toggle('h',!s);if(s){$('pendCount').textContent=p;$('pendCount2').textContent=p}}
+
+// ===== SETUP =====
+function doSave(){var u=$('oUrl').value.trim();if(!u){alert('URL daxil edin!');return}if(u.indexOf('script.google.com')===-1){alert('Google Apps Script URL olmalıdır!');return}URL_=u;ss('m_url',u);$('oMsg').style.display='block';$('oBtn').textContent='✓';setTimeout(function(){$('ov').classList.add('h');updD();toast('Bağlandı!','ok');retry()},700)}
+function doSkip(){$('ov').classList.add('h');updD()}
+function openOv(){$('oUrl').value=URL_||'';$('oMsg').style.display='none';$('oBtn').textContent='Yadda saxla';$('ov').classList.remove('h')}
+
+// ===== SEND =====
+function sendAdd(r){if(!URL_)return Promise.resolve(false);var rows=r.items.map(function(i){return{date:r.date,chain:r.chain,location:r.location,product:i.product,quantity:i.quantity,time:new Date(r.timestamp).toLocaleTimeString('az-AZ',{hour:'2-digit',minute:'2-digit'}),timestamp:r.timestamp}});return fetch(URL_,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({rows:rows})}).then(function(){return true}).catch(function(){return false})}
+function sendDel(ts){if(!URL_)return Promise.resolve(false);return fetch(URL_,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:"delete",timestamp:ts})}).then(function(){return true}).catch(function(){return false})}
+
+function retry(){if(!URL_||retrying)return;var pending=recs.filter(function(r){return!r.ok});if(!pending.length)return;retrying=true;pending.reduce(function(c,r){return c.then(function(){return sendAdd(r).then(function(ok){if(ok){r.ok=true;saveRC();updP()}})})},Promise.resolve()).then(function(){retrying=false;var l=pCnt();if(l===0&&pending.length>0)toast(pending.length+' göndərildi!','ok');updP();if(!$('vh').classList.contains('h'))hist()})}
+function manualRetry(){if(!URL_){alert('URL daxil edin!');return}if(!navigator.onLine){alert('İnternet yoxdur!');return}if(retrying)return;toast('Göndərilir...','ld');retry()}
+
+// ===== TABS =====
+function go(v){$('t1').classList.toggle('on',v==='f');$('t2').classList.toggle('on',v==='h');$('t3').classList.toggle('on',v==='a');$('vf').classList.toggle('h',v!=='f');$('vh').classList.toggle('h',v!=='h');$('va').classList.toggle('h',v!=='a');if(v==='h')hist();if(v==='a')renderAdmin()}
+
+// ===== CHAINS =====
+function mkCh(){var g=$('cg');g.innerHTML='';Object.keys(SM).forEach(function(c){var b=document.createElement('button');b.className='cbtn';b.textContent=c;var cl=gc(c);b.style.borderColor=cl;b.style.color=cl;b.onclick=function(){selCh(c)};g.appendChild(b)})}
+function selCh(c){sCh=c;sLo="";document.querySelectorAll('.cbtn').forEach(function(b){var n=b.textContent,cl=gc(n);if(n===c){b.style.backgroundColor=cl;b.style.color='#fff'}else{b.style.backgroundColor='transparent';b.style.color=cl}});mkLo()}
+function mkLo(){var g=$('lg'),l=$('ll');if(!sCh||!SM[sCh]){g.classList.add('h');return}g.classList.remove('h');l.innerHTML='';SM[sCh].forEach(function(loc){var b=document.createElement('button');b.className='lbtn';b.textContent=loc;b.onclick=function(){sLo=loc;document.querySelectorAll('.lbtn').forEach(function(x){x.classList.toggle('on',x.textContent===loc)})};l.appendChild(b)})}
+
+// ===== PRODUCTS =====
+function mkPr(){var l=$('pl');l.innerHTML='';qty={};PR.forEach(function(p,i){qty[i]=0;var r=document.createElement('div');r.className='pr';r.id='p'+i;r.innerHTML='<div class="pi"><span class="pe">'+p.e+'</span><span class="pn">'+p.name+'</span></div><div class="qc"><button class="qb" onclick="cq('+i+',-1)">−</button><input type="number" inputmode="numeric" class="qi" id="q'+i+'" value="" placeholder="0" onchange="sq('+i+',this.value)" onfocus="this.select()"><button class="qb" onclick="cq('+i+',1)">+</button></div>';l.appendChild(r)})}
+function cq(i,d){var el=$('q'+i),v=Math.max(0,(parseInt(el.value)||0)+d);el.value=v||'';qty[i]=v;$('p'+i).classList.toggle('on',v>0)}
+function sq(i,v){v=Math.max(0,parseInt(v)||0);qty[i]=v;$('q'+i).value=v||'';$('p'+i).classList.toggle('on',v>0)}
+
+function toast(m,t){var c=$('tc'),cls=t==='er'?'t-er':t==='ld'?'t-ld':'t-ok',ic=t==='ld'?'⏳':'✓';c.innerHTML='<div class="toast '+cls+'">'+ic+' '+m+'</div>';if(t!=='ld')setTimeout(function(){c.innerHTML=''},2600)}
+
+// ===== SUBMIT =====
+function submit(){var dt=$('fDate').value;if(!sCh||!sLo){alert('Market və filialı seçin!');return}var items=[];PR.forEach(function(p,i){if(qty[i]>0)items.push({product:p.name,quantity:qty[i]})});if(!items.length){alert('Miqdar daxil edin!');return}var btn=$('sub');btn.disabled=true;btn.textContent='Göndərilir...';var rec={id:Date.now().toString(),date:dt,chain:sCh,location:sLo,items:items,timestamp:new Date().toISOString(),ok:false};recs.unshift(rec);saveRC();updB();updP();if(URL_&&navigator.onLine){toast('Göndərilir...','ld');sendAdd(rec).then(function(v){if(v){rec.ok=true;saveRC();updP();toast('Göndərildi!','ok')}else toast('Sonra göndəriləcək.','er');btn.disabled=false;btn.textContent='Saxla ✓'})}else{toast('Saxlanıldı!','ok');btn.disabled=false;btn.textContent='Saxla ✓'}PR.forEach(function(p,i){qty[i]=0;$('q'+i).value='';$('p'+i).classList.remove('on')});sLo="";document.querySelectorAll('.lbtn').forEach(function(b){b.classList.remove('on')})}
+function updB(){var b=$('cnt');if(recs.length){b.classList.remove('h');b.textContent=recs.length}else b.classList.add('h')}
+
+// ===== DELETE =====
+function delR(id){if(!confirm('Silmək?'))return;var rec=recs.find(function(r){return r.id===id});if(rec&&URL_&&navigator.onLine)sendDel(rec.timestamp);recs=recs.filter(function(r){return r.id!==id});saveRC();updB();updP();hist();toast('Silindi','ok')}
+
+// ===== HISTORY =====
+function hist(){var fc=$('hfc').value,fd=$('hfd').value;var sel=$('hfc'),cv=sel.value,cs={};recs.forEach(function(r){cs[r.chain]=1});sel.innerHTML='<option value="all">Bütün marketlər</option>';Object.keys(cs).forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o)});sel.value=cv;var f=recs.filter(function(r){if(fc!=='all'&&r.chain!==fc)return false;if(fd&&r.date!==fd)return false;return true});$('sv').textContent=f.length;var ti=0;f.forEach(function(r){r.items.forEach(function(i){ti+=i.quantity})});$('si').textContent=ti;var l=$('rl');if(!f.length){l.innerHTML='<div class="empty"><div style="font-size:48px;margin-bottom:12px">📋</div><p style="color:#8896A6">Qeyd yoxdur</p></div>';return}l.innerHTML='';f.forEach(function(r){var cl=gc(r.chain),tm=new Date(r.timestamp).toLocaleTimeString('az-AZ',{hour:'2-digit',minute:'2-digit'});var sy=URL_?(r.ok?'<span class="syn">☁ Göndərilib</span>':'<span class="pen">⏳ Gözləyir</span>'):'';var ih='';r.items.forEach(function(i){ih+='<div class="ri"><span class="rin">'+i.product+'</span><span class="riq">×'+i.quantity+'</span></div>'});var d=document.createElement('div');d.className='rc';d.innerHTML='<div class="rh"><div><span class="ct" style="background:'+cl+'">'+r.chain+'</span><span class="rl">'+r.location+'</span></div><button class="del" onclick="delR(\''+r.id+'\')">✕</button></div><div class="rd">'+r.date+' • '+tm+' '+sy+'</div><div>'+ih+'</div>';l.appendChild(d)})}
+
+function csv(){var fc=$('hfc').value,fd=$('hfd').value;var f=recs.filter(function(r){if(fc!=='all'&&r.chain!==fc)return false;if(fd&&r.date!==fd)return false;return true});if(!f.length){alert('Qeyd yoxdur!');return}var rows=[['Tarix','Market','Filial','Məhsul','Miqdar','Vaxt']];f.forEach(function(r){var tm=new Date(r.timestamp).toLocaleTimeString('az-AZ',{hour:'2-digit',minute:'2-digit'});r.items.forEach(function(i){rows.push([r.date,r.chain,r.location,i.product,i.quantity,tm])})});var s=rows.map(function(r){return r.map(function(c){return'"'+c+'"'}).join(',')}).join('\n');var b=new Blob(['\uFEFF'+s],{type:'text/csv;charset=utf-8;'});var a=document.createElement('a');a.href=window.URL.createObjectURL(b);a.download='mochi_'+td()+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a)}
+
+// ===== VERIFY =====
+function verify(){
+ if(!URL_){alert('Google Sheets URL yoxdur!');return}
+ $('verBtn').disabled=true;$('verBtn').textContent='Yoxlanılır...';
+ $('verResult').innerHTML='';
+ fetch(URL_).then(function(r){return r.json()}).then(function(data){
+  var localSent=recs.filter(function(r){return r.ok}).length;
+  var localItems=0;recs.filter(function(r){return r.ok}).forEach(function(r){r.items.forEach(function(i){localItems+=i.quantity})});
+  var sheetRows=data.count||0;
+  var match=sheetRows>0;
+  var html='<div class="vbox">';
+  html+='<div class="vrow"><span>Google Sheets sətir sayı:</span><span style="font-weight:700">'+sheetRows+'</span></div>';
+  html+='<div class="vrow"><span>Lokal göndərilmiş qeydlər:</span><span style="font-weight:700">'+localSent+'</span></div>';
+  html+='<div class="vrow"><span>Gözləyən qeydlər:</span><span style="font-weight:700;color:'+(pCnt()>0?'#D29922':'#2EA043')+'">'+pCnt()+'</span></div>';
+  if(data.last5&&data.last5.length){
+   html+='<div style="margin-top:12px"><div class="lb">Son qeydlər (Sheets-də):</div>';
+   data.last5.forEach(function(r){html+='<div class="ri" style="margin-top:4px"><span class="rin">'+r.chain+' → '+r.product+'</span><span class="riq">×'+r.qty+'</span></div>'});
+   html+='</div>';
+  }
+  html+='</div>';
+  $('verResult').innerHTML=html;
+  $('verBtn').disabled=false;$('verBtn').textContent='Yoxla';
+ }).catch(function(e){
+  $('verResult').innerHTML='<div style="color:#DA3633;font-size:13px;padding:12px">❌ Əlaqə qurmaq mümkün olmadı. URL-i yoxlayın.</div>';
+  $('verBtn').disabled=false;$('verBtn').textContent='Yoxla';
+ });
+}
+
+// ===== BACKUP =====
+function doBackup(){
+ var data={sm:SM,pr:PR,url:URL_,pin:PIN,recs:recs,date:new Date().toISOString()};
+ var s=JSON.stringify(data,null,2);
+ var b=new Blob([s],{type:'application/json'});
+ var a=document.createElement('a');a.href=window.URL.createObjectURL(b);a.download='mochi_backup_'+td()+'.json';document.body.appendChild(a);a.click();document.body.removeChild(a);
+ toast('Backup saxlanıldı!','ok');
+}
+
+function doRestore(e){
+ var file=e.target.files[0];if(!file)return;
+ var reader=new FileReader();
+ reader.onload=function(ev){
+  try{
+   var data=JSON.parse(ev.target.result);
+   if(!data.sm||!data.pr){alert('Düzgün backup faylı deyil!');return}
+   if(!confirm('Bütün məlumatlar əvəz olunacaq. Davam?'))return;
+   SM=data.sm;saveSM();
+   PR=data.pr;savePR();
+   if(data.url){URL_=data.url;ss('m_url',URL_)}
+   if(data.pin){PIN=data.pin;ss('m_pin',PIN)}
+   if(data.recs){recs=data.recs;saveRC()}
+   mkCh();mkPr();updB();updD();updP();renderAdmin();
+   toast('Restore tamamlandı!','ok');
+  }catch(err){alert('Fayl oxuna bilmədi!')}
+ };
+ reader.readAsText(file);
+ e.target.value='';
+}
+
+// ===== CHANGE PIN =====
+function changePin(){
+ var v=$('newPin').value.trim();
+ if(v.length!==4||!/^\d{4}$/.test(v)){alert('4 rəqəm olmalıdır!');return}
+ PIN=v;ss('m_pin',PIN);$('newPin').value='';toast('PIN dəyişdirildi!','ok');
+}
+
+// ===== ADMIN =====
+function renderAdmin(){
+ var cl=$('chainList');cl.innerHTML='';Object.keys(SM).forEach(function(c){var t=document.createElement('span');t.className='atag';t.innerHTML=c+' <span style="color:#8896A6;font-size:11px">('+SM[c].length+')</span> <button onclick="delChain(this)" data-c="'+c.replace(/"/g,'&quot;')+'">✕</button>';cl.appendChild(t)});
+ var sel=$('branchChainSel');sel.innerHTML='<option value="">Market seçin...</option>';Object.keys(SM).forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o)});sel.onchange=function(){renderBr()};renderBr();
+ var pl=$('prodList');pl.innerHTML='';PR.forEach(function(p,i){var t=document.createElement('span');t.className='atag';t.innerHTML=p.e+' '+p.name+' <button onclick="delProd('+i+')">✕</button>';pl.appendChild(t)});
+}
+function renderBr(){var c=$('branchChainSel').value;var bl=$('branchList');bl.innerHTML='';if(!c||!SM[c])return;SM[c].forEach(function(b,i){var t=document.createElement('span');t.className='atag';t.innerHTML=b+' <button onclick="delBr(\''+c.replace(/'/g,"\\'")+'\','+i+')">✕</button>';bl.appendChild(t)})}
+function addChain(){var n=$('newChain').value.trim();if(!n)return;if(SM[n]){alert('Artıq var!');return}SM[n]=[];saveSM();$('newChain').value='';mkCh();renderAdmin();toast(n+' əlavə edildi','ok')}
+function addBranch(){var c=$('branchChainSel').value,n=$('newBranch').value.trim();if(!c||!n)return;if(SM[c].indexOf(n)!==-1){alert('Artıq var!');return}SM[c].push(n);saveSM();$('newBranch').value='';if(sCh===c)mkLo();renderBr();toast(n+' əlavə edildi','ok')}
+function addProduct(){var n=$('newProdName').value.trim(),e=$('newProdEmoji').value.trim()||'📦';if(!n)return;PR.push({name:n,e:e});savePR();$('newProdName').value='';$('newProdEmoji').value='';mkPr();renderAdmin();toast(n+' əlavə edildi','ok')}
+function delChain(btn){var c=btn.getAttribute('data-c');if(!confirm(c+' silmək?'))return;delete SM[c];saveSM();if(sCh===c){sCh='';sLo='';$('lg').classList.add('h')}mkCh();renderAdmin()}
+function delBr(c,i){var n=SM[c][i];if(!confirm(n+' silmək?'))return;SM[c].splice(i,1);saveSM();if(sCh===c)mkLo();renderBr()}
+function delProd(i){if(!confirm(PR[i].name+' silmək?'))return;PR.splice(i,1);savePR();mkPr();renderAdmin()}
+
+initPin();
+</script>
+</body>
+</html>
